@@ -13,6 +13,42 @@ public class GameGenerator {
         return unsolveGame(getSolvedGame());
     }
 
+    // return a playable Sudoku puzzle
+    private static int[][] unsolveGame(int[][] solvedGame) {
+        Random random = new Random(System.currentTimeMillis());
+
+        boolean solvable = false;
+        int[][] solvableArray = new int[GRID_BOUNDARY][GRID_BOUNDARY];
+
+        while (solvable == false) {
+            // use copy because we dont want to modify the original solved sudoku board
+            SudokuUtilities.copySudokuArrayValues(solvedGame, solvableArray);
+
+            int index = 0;
+
+            // remove random 40 values from the sudoku puzzle for the game
+            while (index < 40) {
+                int xCoordinate = random.nextInt(GRID_BOUNDARY);
+                int yCoordinate = random.nextInt(GRID_BOUNDARY);
+
+                if (solvableArray[xCoordinate][yCoordinate] != 0){
+                    solvableArray[xCoordinate][yCoordinate] = 0;
+                    index++;
+                }
+
+            }
+
+            // copy again as a test version for solver
+            int[][] toBeSolved = new int[GRID_BOUNDARY][GRID_BOUNDARY];
+            SudokuUtilities.copySudokuArrayValues(solvableArray, toBeSolved);
+
+            solvable = SudokuSolver.puzzleIsSolvable(toBeSolved);
+
+        }
+
+        return solvableArray;
+    }
+
     // generate a fully solved, valid 9×9 Sudoku grid
     private static int[][] getSolvedGame() {
         Random random = new Random(System.currentTimeMillis());
