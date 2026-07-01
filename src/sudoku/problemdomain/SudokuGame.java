@@ -1,9 +1,11 @@
 package sudoku.problemdomain;
 
+import sudoku.computationlogic.SudokuUtilities;
 import sudoku.constants.GameState;
 
 import java.io.Serializable;
 
+// A single complete Sudoku game state at one moment in time
 public class SudokuGame implements Serializable {
 
     private final GameState gameState;
