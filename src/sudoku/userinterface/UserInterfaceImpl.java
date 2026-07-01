@@ -1,10 +1,13 @@
 package sudoku.userinterface;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import sudoku.problemdomain.Coordinates;
 import sudoku.problemdomain.SudokuGame;
@@ -102,6 +105,48 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
     }
 
     private void drawTextFields(Group root) {
+        final int xOrigin = 50;
+        final int yOrigin = 50;
+
+        final int xAndYDelta = 64;
+
+        // O(n^2) Runtime Complexity
+        // Create 9x9 = 81 Sudoku cells
+        for (int xIndex = 0; xIndex < 9; xIndex++){
+            for (int yIndex = 0; yIndex < 9; yIndex++){
+
+                int x = xOrigin + xIndex * xAndYDelta;
+                int y = yOrigin + yIndex * xAndYDelta;
+
+                // Create a Sudoku cell with its grid coordinates (not pixel position)
+                SudokuTextField tile = new SudokuTextField(xIndex, yIndex);
+
+                styleSudokuTile(tile,x,y);  // // Apply styling and position to the UI element
+
+                tile.setOnKeyPressed(this); // listen from input from the user on this cell
+
+                // Store this cell in its coordinate
+                textFieldCoordinates.put(new Coordinates(xIndex,yIndex), tile);
+
+                root.getChildren().add(tile);
+            }
+        }
+    }
+
+    private void styleSudokuTile(SudokuTextField tile, int x, int y) {
+        Font numberFont = new Font(32);
+
+        tile.setFont(numberFont);
+        tile.setAlignment(Pos.CENTER);
+
+        tile.setLayoutX(x);
+        tile.setLayoutY(y);
+
+        // set default size
+        tile.setPrefHeight(64);
+        tile.setPrefWidth(64);
+
+        tile.setBackground(Background.EMPTY); // set background transparent
     }
 
     private void drawSudokuBoard(Group root) {
