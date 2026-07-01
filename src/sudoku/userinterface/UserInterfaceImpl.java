@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
@@ -11,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sudoku.constants.GameState;
 import sudoku.problemdomain.Coordinates;
 import sudoku.problemdomain.SudokuGame;
 
@@ -192,19 +194,59 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
 
     }
 
-
+    // Update one cell in the Sudoku grid
     @Override
     public void updateSquare(int x, int y, int input) {
+        // Find the correct TextField
+        SudokuTextField tile = textFieldCoordinates.get(new Coordinates(x,y));
 
+        // Convert number to string, UI only accepts text, not int
+        String value = Integer.toString(
+                input
+        );
+
+        if (value.equals("0")) value = "";  // Handle empty cell
+
+        tile.textProperty().setValue(value);  // Update UI
+
+    }
+
+    // Update the entire 9×9 board at once
+    // starts a new game when game ends
+    @Override
+    public void updateBoard(SudokuGame game) {
+        for (int xIndex = 0; xIndex < 9; xIndex++ ) {
+            for (int yIndex = 0; yIndex < 9; yIndex++ ){
+                TextField tile = textFieldCoordinates.get(new Coordinates(xIndex, yIndex));
+
+                String value = Integer.toString(
+                        game.getCopyOfGridState()[xIndex][yIndex]
+                );
+
+                if (value.equals("0")) value = "";
+
+                tile.setText(
+                        value
+                );  // Update UI
+
+                // JavaFX CSS styling
+                if (game.getGameState() == GameState.NEW) {
+
+                    // Empty cells, player can type them
+                    if (value.equals("")) {
+                        tile.setStyle("-fx-opacity: 1;");  // fully visible
+                        tile.setDisable(false);
+                    } else {
+                        tile.setStyle("-fx-opacity: 0.8;");  // slightly faded
+                        tile.setDisable(true);
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public void showDialog(String message) {
-
-    }
-
-    @Override
-    public void updateBoard(SudokuGame game) {
 
     }
 
