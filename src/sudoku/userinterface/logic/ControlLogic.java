@@ -50,8 +50,20 @@ public class ControlLogic implements IUserInterfaceContract.EventListener {
         }
     }
 
+    // when the user clicks OK on the Game Complete dialog
     @Override
     public void onDialogClick() {
+        try {
+            // generate and store a new Sudoku game
+            storage.updateGameData(
+                    GameLogic.getNewGame()
+            );
 
+            view.updateBoard(storage.getGameData());
+
+        } catch (IOException e) {
+            // show error if storage fails
+            view.showError(Messages.ERROR);
+        }
     }
 }
