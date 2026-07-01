@@ -4,7 +4,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
@@ -125,7 +128,7 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
                 // Create a Sudoku cell with its grid coordinates (not pixel position)
                 SudokuTextField tile = new SudokuTextField(xIndex, yIndex);
 
-                styleSudokuTile(tile,x,y);  // // Apply styling and position to the UI element
+                styleSudokuTile(tile,x,y);  // Apply styling and position to the UI element
 
                 tile.setOnKeyPressed(this); // listen from input from the user on this cell
 
@@ -189,11 +192,6 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
 
     }
 
-    @Override
-    public void handle(KeyEvent keyEvent) {
-
-    }
-
     // Update one cell in the Sudoku grid
     @Override
     public void updateSquare(int x, int y, int input) {
@@ -247,11 +245,45 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
 
     @Override
     public void showDialog(String message) {
+        Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK);
+        dialog.showAndWait();
+
+        if (dialog.getResult() == ButtonType.OK) listener.onDialogClick();
 
     }
 
     @Override
     public void showError(String message) {
+        Alert dialog = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
+        dialog.showAndWait();
 
+    }
+
+    @Override
+    public void handle(KeyEvent event) {
+        if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+            if (
+                    event.getText().matches("[0-9]")
+            ) {
+                int value = Integer.parseInt(event.getText()); // convert string to int
+                handleInput(value, event.getSource());
+            } else if (event.getCode() == KeyCode.BACK_SPACE) {
+                handleInput(0, event.getSource());  // treat backspace as clear this cell (value 0)
+            } else {
+                // any other key like letters, symbols, or arrows, wipe the field
+                ((TextField) event.getSource()).setText("");  // casting because event source is generic (Object)
+            }
+        }
+
+        event.consume(); // stop this event from also triggering the TextField's own default typing behavior
+    }
+
+    private void handleInput(int value, Object source) {
+        listener.onSudokuInput (
+                // find grid location
+                ((SudokuTextField) source).getX(),
+                ((SudokuTextField) source).getY(),
+                value // the digit typed, or 0 if backspace
+        );
     }
 }
