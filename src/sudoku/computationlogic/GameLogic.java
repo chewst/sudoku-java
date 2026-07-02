@@ -36,6 +36,34 @@ public class GameLogic {
         else return false;
     }
 
+    // check each rows for duplicates
+    private static boolean rowsAreInvalid(int[][] grid) {
+        for (int yIndex = 0; yIndex < GRID_BOUNDARY; yIndex++) {
+            List<Integer> row = new ArrayList<>();
+            for (int xIndex = 0; xIndex < GRID_BOUNDARY; xIndex++) {
+                row.add(grid[xIndex][yIndex]);
+            }
+
+            if (collectionHasRepeats(row)) return true;
+        }
+
+        return false;
+    }
+
+    // check each column for duplicates
+    private static boolean columnsAreInvalid(int[][] grid) {
+        for (int xIndex = 0; xIndex < GRID_BOUNDARY; xIndex++) {
+            List<Integer> row = new ArrayList<>();
+            for (int yIndex = 0; yIndex < GRID_BOUNDARY; yIndex++) {
+                row.add(grid[xIndex][yIndex]);
+            }
+
+            if (collectionHasRepeats(row)) return true;
+        }
+
+        return false;
+    }
+
     // 3x3 box check - splits the board into 3 horizontal layers of boxes:
     // top, middle, bottom row of boxes
     private static boolean squaresAreInvalid(int[][] grid) {
