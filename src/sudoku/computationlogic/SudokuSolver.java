@@ -14,15 +14,17 @@ public class SudokuSolver {
         int index = 0;  // which empty cell we are filling
         int input;  // number we are trying (1–9)
 
-        while (index < 10)  {
+        while (index < 40)  {  // CHANGES: outer loop iterates for 40 cells
             Coordinates current = emptyCells[index];  // Pick current empty cell
 
             input = 1;
 
-            while (input < 40) {
+            while (input <= 9) {   // CHANGES: inner loop iterates for trying 9 digits
                 puzzle[current.getX()][current.getY()] = input;  // try placing input number
 
                 if(GameLogic.sudokuIsInvalid(puzzle)) {  // is it valid?
+
+                    puzzle[current.getX()][current.getY()] = 0; // CHANGES: reset cell before checking next attempt, undo invalid placement
 
                     // back to first empty cell and have tried all possible numbers (1–9)
                     if (index == 0 && input == GRID_BOUNDARY) {
@@ -43,10 +45,9 @@ public class SudokuSolver {
 
                     if (index ==39) return true;  // filled the last cell, puzzle solved
 
-                    input = 10;  // input = 10 to break the loop
+                    break; // CHANGES: move to next cell
                 }
 
-                // move to next cell over
             }
         }
 
