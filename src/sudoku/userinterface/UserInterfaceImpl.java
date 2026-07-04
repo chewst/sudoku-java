@@ -228,16 +228,13 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
                 );  // Update UI
 
                 // JavaFX CSS styling
-                if (game.getGameState() == GameState.NEW) {
 
-                    // Empty cells, player can type them
-                    if (value.equals("")) {
-                        tile.setStyle("-fx-opacity: 1;");  // fully visible
-                        tile.setDisable(false);
-                    } else {
-                        tile.setStyle("-fx-opacity: 0.8;");  // slightly faded
-                        tile.setDisable(true);
-                    }
+                if (game.getFixedCells()[xIndex][yIndex]) {
+                    tile.setStyle("-fx-opacity: 0.8;");   // slightly faded
+                    tile.setDisable(true);
+                } else {
+                    tile.setStyle("-fx-opacity: 1;");  // fully visible
+                    tile.setDisable(false);
                 }
             }
         }

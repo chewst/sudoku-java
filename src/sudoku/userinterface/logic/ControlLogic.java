@@ -33,7 +33,8 @@ public class ControlLogic implements IUserInterfaceContract.EventListener {
             // create new game instance with updated state
             gameData = new SudokuGame(
                     GameLogic.checkForCompletion(newGridState),
-                    newGridState
+                    newGridState,
+                    gameData.getFixedCells()   // carry forward the original fixed cells
             );
 
             storage.updateGameData(gameData);  // persist updated game state
